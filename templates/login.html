@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login | AI Plagiarism Detector</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+background: linear-gradient(135deg,#6a11cb,#2575fc);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.card{
+border-radius:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="row justify-content-center">
+
+<div class="col-md-4 col-lg-3">
+
+<div class="card shadow p-4">
+
+<h3 class="text-center mb-3">
+AI Plagiarism Detector
+</h3>
+
+<p class="text-center text-muted mb-4">
+User Login
+</p>
+
+{% if error %}
+<div class="alert alert-danger text-center">
+{{ error }}
+</div>
+{% endif %}
+
+<form action="/login_auth" method="POST">
+
+<input
+class="form-control mb-3"
+name="username"
+placeholder="Username"
+autocomplete="username"
+required
+>
+
+<input
+class="form-control mb-3"
+type="password"
+name="password"
+placeholder="Password"
+autocomplete="current-password"
+required
+>
+
+<button class="btn btn-primary w-100">
+Login
+</button>
+
+</form>
+
+<div class="text-center mt-3">
+
+<a href="/register">
+Create new account
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
