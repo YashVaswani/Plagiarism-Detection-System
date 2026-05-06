@@ -116,13 +116,16 @@ def preprocess_text(text):
 
 def calculate_similarity(t1, t2):
 
-    vectorizer = TfidfVectorizer()
+    if not t1.strip() or not t2.strip():
+        return 0.0
 
-    vectors = vectorizer.fit_transform([t1, t2])
-
-    score = cosine_similarity(vectors)[0][1]
-
-    return score * 100
+    try:
+        vectorizer = TfidfVectorizer()
+        vectors = vectorizer.fit_transform([t1, t2])
+        score = cosine_similarity(vectors)[0][1]
+        return score * 100
+    except ValueError:
+        return 0.0
 
 
 # ---------------- SENTENCE MATCHING ----------------
@@ -319,4 +322,4 @@ def check():
 # ---------------- RUN APP ----------------
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
