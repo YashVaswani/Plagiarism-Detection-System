@@ -1,98 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="h-full">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Login | AI Plagiarism Detector</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<style>
-
-body{
-background: linear-gradient(135deg,#6a11cb,#2575fc);
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-}
-
-.card{
-border-radius:15px;
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — PlagiaGuard AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#f0f4ff', 100:'#dbe4ff', 400:'#748ffc', 500:'#5c7cfa', 600:'#4c6ef5', 700:'#4263eb' },
+            surface: { 900:'#0d0f17', 800:'#13151f', 700:'#1a1d2b', 600:'#222535' }
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'float2': 'float 8s ease-in-out infinite 2s',
+            'float3': 'float 7s ease-in-out infinite 4s',
+          },
+          keyframes: {
+            float: { '0%,100%': { transform:'translateY(0px)' }, '50%': { transform:'translateY(-20px)' } }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
+    .input-field {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #e2e8f0;
+      transition: all 0.3s ease;
+    }
+    .input-field::placeholder { color: #64748b; }
+    .input-field:focus { outline: none; border-color: #5c7cfa; background: rgba(92,124,250,0.08); box-shadow: 0 0 0 3px rgba(92,124,250,0.15); }
+    .btn-primary {
+      background: linear-gradient(135deg, #5c7cfa, #4c6ef5);
+      transition: all 0.3s ease;
+      position: relative; overflow: hidden;
+    }
+    .btn-primary::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent); transition: left 0.5s; }
+    .btn-primary:hover::before { left:100%; }
+    .btn-primary:hover { transform:translateY(-1px); box-shadow: 0 8px 25px rgba(92,124,250,0.4); }
+    .blob { position:absolute; border-radius:50%; filter:blur(80px); opacity:0.15; }
+  </style>
 </head>
+<body class="h-full bg-surface-900 font-sans flex items-center justify-center min-h-screen relative overflow-hidden">
 
-<body>
+  <!-- Animated background blobs -->
+  <div class="blob w-96 h-96 bg-brand-500 top-[-10%] left-[-10%] animate-float"></div>
+  <div class="blob w-80 h-80 bg-purple-600 bottom-[-5%] right-[-5%] animate-float2"></div>
+  <div class="blob w-64 h-64 bg-indigo-500 top-[40%] right-[20%] animate-float3"></div>
 
-<div class="container">
+  <div class="relative z-10 w-full max-w-sm px-4">
 
-<div class="row justify-content-center">
+    <!-- Logo / Brand -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-600 mb-4 shadow-lg shadow-brand-600/30">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        </svg>
+      </div>
+      <h1 class="text-2xl font-bold text-white tracking-tight">PlagiaGuard <span class="text-brand-400">AI</span></h1>
+      <p class="text-slate-400 text-sm mt-1">Intelligent Plagiarism Detection</p>
+    </div>
 
-<div class="col-md-4 col-lg-3">
+    <!-- Card -->
+    <div class="glass rounded-2xl p-8 shadow-2xl">
+      <h2 class="text-lg font-semibold text-white mb-1">Welcome back</h2>
+      <p class="text-slate-400 text-sm mb-6">Sign in to your account to continue</p>
 
-<div class="card shadow p-4">
+      {% if error %}
+      <div class="flex items-center gap-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3 mb-5 text-sm">
+        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+        {{ error }}
+      </div>
+      {% endif %}
 
-<h3 class="text-center mb-3">
-AI Plagiarism Detector
-</h3>
+      <form action="/login_auth" method="POST" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wider">Username</label>
+          <input
+            class="input-field w-full rounded-xl px-4 py-3 text-sm"
+            name="username"
+            placeholder="Enter your username"
+            autocomplete="username"
+            required
+          >
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wider">Password</label>
+          <input
+            class="input-field w-full rounded-xl px-4 py-3 text-sm"
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+          >
+        </div>
 
-<p class="text-center text-muted mb-4">
-User Login
-</p>
+        <button id="login-btn" type="submit" class="btn-primary w-full text-white font-semibold py-3 rounded-xl text-sm mt-2">
+          Sign In
+        </button>
+      </form>
 
-{% if error %}
-<div class="alert alert-danger text-center">
-{{ error }}
-</div>
-{% endif %}
+      <p class="text-center text-slate-500 text-sm mt-6">
+        Don't have an account?
+        <a href="/register" class="text-brand-400 hover:text-brand-300 font-medium transition-colors">Create one</a>
+      </p>
+    </div>
 
-<form action="/login_auth" method="POST">
-
-<input
-class="form-control mb-3"
-name="username"
-placeholder="Username"
-autocomplete="username"
-required
->
-
-<input
-class="form-control mb-3"
-type="password"
-name="password"
-placeholder="Password"
-autocomplete="current-password"
-required
->
-
-<button class="btn btn-primary w-100">
-Login
-</button>
-
-</form>
-
-<div class="text-center mt-3">
-
-<a href="/register">
-Create new account
-</a>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
+    <p class="text-center text-slate-600 text-xs mt-6">Protected by end-to-end encryption</p>
+  </div>
 
 </body>
-
 </html>
