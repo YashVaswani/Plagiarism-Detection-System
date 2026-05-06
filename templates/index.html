@@ -1,107 +1,175 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="h-full">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — PlagiaGuard AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#f0f4ff', 100:'#dbe4ff', 400:'#748ffc', 500:'#5c7cfa', 600:'#4c6ef5', 700:'#4263eb' },
+            surface: { 900:'#0d0f17', 800:'#13151f', 700:'#1a1d2b', 600:'#222535' }
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'float2': 'float 8s ease-in-out infinite 2s',
+            'float3': 'float 7s ease-in-out infinite 4s',
+          },
+          keyframes: {
+            float: { '0%,100%': { transform:'translateY(0px)' }, '50%': { transform:'translateY(-20px)' } }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
+    .btn-primary {
+      background: linear-gradient(135deg, #5c7cfa, #4c6ef5);
+      transition: all 0.3s ease;
+      position: relative; overflow: hidden;
+    }
+    .btn-primary::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent); transition: left 0.5s; }
+    .btn-primary:hover::before { left:100%; }
+    .btn-primary:hover { transform:translateY(-1px); box-shadow: 0 8px 25px rgba(92,124,250,0.4); }
+    
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      transition: all 0.3s ease;
+      position: relative; overflow: hidden;
+    }
+    .btn-success::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent); transition: left 0.5s; }
+    .btn-success:hover::before { left:100%; }
+    .btn-success:hover { transform:translateY(-1px); box-shadow: 0 8px 25px rgba(16,185,129,0.35); }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      transition: all 0.3s ease;
+    }
+    .btn-danger:hover { transform:translateY(-1px); box-shadow: 0 8px 25px rgba(239,68,68,0.35); }
 
-<title>AI Plagiarism Detector</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<style>
-
-body{
-background: linear-gradient(135deg,#6a11cb,#2575fc);
-min-height:100vh;
-}
-
-.header{
-color:white;
-margin-bottom:30px;
-}
-
-.card{
-border-radius:15px;
-}
-
-</style>
-
+    .file-input-wrapper {
+      background: rgba(255,255,255,0.03);
+      border: 1px dashed rgba(255,255,255,0.15);
+      transition: all 0.3s ease;
+    }
+    .file-input-wrapper:hover {
+      background: rgba(92,124,250,0.05);
+      border-color: #5c7cfa;
+    }
+    .file-input-wrapper input[type=file]::file-selector-button {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      color: #fff;
+      cursor: pointer;
+      margin-right: 1rem;
+      transition: all 0.2s;
+    }
+    .file-input-wrapper input[type=file]::file-selector-button:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .blob { position:absolute; border-radius:50%; filter:blur(80px); opacity:0.15; z-index: 0; pointer-events: none;}
+  </style>
 </head>
+<body class="h-full bg-surface-900 font-sans min-h-screen relative overflow-hidden text-slate-300">
 
-<body>
+  <div class="blob w-[40rem] h-[40rem] bg-brand-500 top-[-20%] left-[-10%] animate-float"></div>
+  <div class="blob w-[30rem] h-[30rem] bg-purple-600 bottom-[-10%] right-[-5%] animate-float2"></div>
 
-<div class="container mt-5">
+  <div class="relative z-10 container mx-auto px-4 py-8 max-w-5xl h-full flex flex-col">
+    
+    <!-- Navbar -->
+    <nav class="glass rounded-2xl px-6 py-4 flex justify-between items-center mb-10 shadow-lg">
+      <div class="flex items-center gap-3">
+        <div class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-600 shadow-lg shadow-brand-600/30">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <h1 class="text-xl font-bold text-white tracking-tight">PlagiaGuard <span class="text-brand-400">AI</span></h1>
+      </div>
+      
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-surface-700 flex items-center justify-center border border-white/10">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          </div>
+          <span class="text-sm font-medium text-slate-300">{{ session['user'] }}</span>
+        </div>
+        <a href="/logout" class="btn-danger px-4 py-2 rounded-xl text-sm font-semibold text-white shadow-lg">Logout</a>
+      </div>
+    </nav>
 
-<div class="header d-flex justify-content-between align-items-center">
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1">
+      
+      <!-- Add Reference Document -->
+      <div class="glass rounded-3xl p-8 flex flex-col relative overflow-hidden group hover:border-emerald-500/30 transition-colors">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-bl-full -z-10 group-hover:bg-emerald-500/20 transition-colors"></div>
+        
+        <div class="mb-6">
+          <div class="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center mb-4 text-emerald-400">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-2">Knowledge Base</h2>
+          <p class="text-slate-400 text-sm leading-relaxed">Add verified source documents to your personal knowledge base. The system will use these to check for potential plagiarism.</p>
+        </div>
 
-<h2>AI Plagiarism Detection System</h2>
+        <form action="/add" method="POST" enctype="multipart/form-data" class="mt-auto space-y-4">
+          <div class="file-input-wrapper rounded-xl p-3">
+            <input 
+              type="file" 
+              name="file" 
+              class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-surface-700 file:text-white hover:file:bg-surface-600 transition-all cursor-pointer"
+              accept=".txt,.pdf,.docx" 
+              required
+            >
+          </div>
+          <button type="submit" class="btn-success w-full text-white font-semibold py-3.5 rounded-xl text-sm flex justify-center items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            Upload to Knowledge Base
+          </button>
+        </form>
+      </div>
 
-<div>
-<span class="me-3 text-white">
-Logged in as <b>{{ session['user'] }}</b>
-</span>
+      <!-- Check Plagiarism -->
+      <div class="glass rounded-3xl p-8 flex flex-col relative overflow-hidden group hover:border-brand-500/30 transition-colors">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/10 rounded-bl-full -z-10 group-hover:bg-brand-500/20 transition-colors"></div>
+        
+        <div class="mb-6">
+          <div class="w-12 h-12 bg-brand-500/20 rounded-2xl flex items-center justify-center mb-4 text-brand-400">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-2">Analyze Document</h2>
+          <p class="text-slate-400 text-sm leading-relaxed">Upload a document to check it against your knowledge base. Our AI engine will detect similarities and provide a detailed report.</p>
+        </div>
 
-<a href="/logout" class="btn btn-danger">
-Logout
-</a>
-</div>
+        <form action="/check" method="POST" enctype="multipart/form-data" class="mt-auto space-y-4">
+          <div class="file-input-wrapper rounded-xl p-3">
+            <input 
+              type="file" 
+              name="file" 
+              class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-surface-700 file:text-white hover:file:bg-surface-600 transition-all cursor-pointer"
+              accept=".txt,.pdf,.docx" 
+              required
+            >
+          </div>
+          <button type="submit" class="btn-primary w-full text-white font-semibold py-3.5 rounded-xl text-sm flex justify-center items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+            Run Plagiarism Check
+          </button>
+        </form>
+      </div>
 
-</div>
-
-
-<!-- ADD DOCUMENT -->
-
-<div class="card p-4 shadow mb-4">
-
-<h4 class="mb-3">Add Reference Document</h4>
-
-<form action="/add" method="POST" enctype="multipart/form-data">
-
-<input 
-type="file"
-name="file"
-class="form-control mb-3"
-accept=".txt,.pdf,.docx"
-required
->
-
-<button class="btn btn-success w-100">
-Add Document
-</button>
-
-</form>
-
-</div>
-
-
-<!-- CHECK PLAGIARISM -->
-
-<div class="card p-4 shadow">
-
-<h4 class="mb-3">Check Plagiarism</h4>
-
-<form action="/check" method="POST" enctype="multipart/form-data">
-
-<input
-type="file"
-name="file"
-class="form-control mb-3"
-accept=".txt,.pdf,.docx"
-required
->
-
-<button class="btn btn-primary w-100">
-Check Plagiarism
-</button>
-
-</form>
-
-</div>
-
-</div>
+    </div>
+  </div>
 
 </body>
-
 </html>
